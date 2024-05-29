@@ -1,0 +1,30 @@
+name: Build the code and scan the code
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:      
+  Code-build-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout the code
+      uses: actions/checkout@v4
+    - name: Use Node.js 22
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+    - run: npm ci
+    - run: npm run build --if-present
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      with:
+        args: >
+          -Dsonar.projectKey=my-express-helloworld
+          #-Dsonar.host.url=http://localhost:9000 
+          #-Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      env:
+        SONAR_HOST_URL: http://localhost:9000 
+        SONAR_TOKEN: sqa_5adb54166520edabe10bcc623c1907f64871153d

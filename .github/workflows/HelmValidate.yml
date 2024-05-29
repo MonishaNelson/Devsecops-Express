@@ -1,0 +1,31 @@
+name: Build the image and scan the image
+on:
+    push:
+      branches: [ "master" ]
+    pull_request:
+      branches: [ "master" ]
+
+    workflow_dispatch: 
+
+jobs:
+  HelmTemplateValidation:
+
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug Environment Variables
+        run: |
+          echo "CHART_LOCATION: ${{ env.CHART_LOCATION }}"
+          echo "CHART_VALUES: ${{ env.CHART_VALUES }}"
+      
+      - name: GitHub Action for Helm Templates Validation
+        uses: hopisaurus/helm-check-action@v0.1.1
+        env:
+          CHART_LOCATION: ./express-chart
+          CHART_VALUES: ./express-chart/values.yaml
+          
+        
+          
